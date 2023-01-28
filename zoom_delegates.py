@@ -4,13 +4,30 @@
 
 import requests
 import json
-import sys
 import os
-from assistants import assistants
+import argparse
 
 bearerToken = os.environ.get('zoomBearer')
 
-newUser = sys.argv[1]
+parser = argparse.ArgumentParser(
+                    prog = 'Zoom Delegate Adder',
+                    description = 'Adds assistants to a zoom users account for delegate access')
+
+parser.add_argument( "-t", "--target", dest='targetUser', type=str, help="The user who you want to add an assistant to")
+parser.add_argument("-a", "--assistant", dest='assistantUser', type=str, help="The user who will be added as an assistant to the target User")
+
+args = parser.parse_args()
+
+assistants =  {
+  "assistants":[
+        {
+          "email": args.assistantUser
+        }
+    ]
+}
+
+newUser = args.targetUser
+
 endpoint = f"https://api.zoom.us/v2/users/{newUser}/assistants"
 headers = {
    'Authorization': f'Bearer {bearerToken}',
